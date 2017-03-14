@@ -6,7 +6,7 @@ Based on [pix2pix](https://phillipi.github.io/pix2pix/) by Isola et al.
 
 The examples from the paper: 
 
-<img src="result/examples.jpg" width = "766" height = "282" alt="examples" align=center />
+<img src="examples.jpg" width = "766" height = "282" alt="examples" align=center />
 
 ## Prerequisites
 
