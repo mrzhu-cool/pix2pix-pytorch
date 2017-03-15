@@ -89,6 +89,9 @@ def train(epoch):
         ############################
         # (1) Update D network: maximize log(D(x,y)) + log(1 - D(x,G(x)))
         ###########################
+        for p in netD.parameters(): # reset requires_grad
+            p.requires_grad = True # they are set to False below in netG update
+
         # train with real
         netD.zero_grad()
         real_a_cpu, real_b_cpu = batch[0], batch[1]
@@ -115,6 +118,8 @@ def train(epoch):
         ############################
         # (2) Update G network: maximize log(D(x,G(x))) + L1(y,G(x))
         ###########################
+        for p in netD.parameters():
+            p.requires_grad = False # to avoid computation
         netG.zero_grad()
         output = netD(torch.cat((real_A, fake_b), 1))
         label.data.resize_(output.size()).fill_(real_label)
