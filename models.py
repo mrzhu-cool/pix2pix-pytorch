@@ -13,7 +13,7 @@ def weights_init(m):
         m.weight.data.normal_(1.0, 0.02)
         m.bias.data.fill_(0)
 
-
+# For input size input_nc x 256 x 256
 class G(nn.Module):
     def __init__(self, input_nc, output_nc, ngf):
         super(G, self).__init__()
@@ -47,6 +47,7 @@ class G(nn.Module):
         self.tanh = nn.Tanh()
 
     def forward(self, input):
+        # Encoder
         # Convolution layers:
         # input is (nc) x 256 x 256
         e1 = self.conv1(input)
@@ -63,7 +64,10 @@ class G(nn.Module):
         # input is (ngf x 8) x 4 x 4
         e7 = self.batch_norm8(self.conv7(self.leaky_relu(e6)))
         # input is (ngf x 8) x 2 x 2
-        e8 = self.batch_norm8(self.conv8(self.leaky_relu(e7)))
+        # No batch norm on output of Encoder
+        e8 = self.conv8(self.leaky_relu(e7))
+
+        # Decoder
         # Deconvolution layers:
         # input is (ngf x 8) x 1 x 1
         d1_ = self.dropout(self.batch_norm8(self.dconv1(self.relu(e8))))
