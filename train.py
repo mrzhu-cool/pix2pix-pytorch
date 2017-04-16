@@ -89,10 +89,8 @@ def train(epoch):
         ############################
         # (1) Update D network: maximize log(D(x,y)) + log(1 - D(x,G(x)))
         ###########################
-        for p in netD.parameters(): # reset requires_grad
-            p.requires_grad = True # they are set to False below in netG update
-
         # train with real
+        netD.volatile = False
         netD.zero_grad()
         real_a_cpu, real_b_cpu = batch[0], batch[1]
         real_A.data.resize_(real_a_cpu.size()).copy_(real_a_cpu)
@@ -118,9 +116,8 @@ def train(epoch):
         ############################
         # (2) Update G network: maximize log(D(x,G(x))) + L1(y,G(x))
         ###########################
-        for p in netD.parameters():
-            p.requires_grad = False # to avoid computation
         netG.zero_grad()
+        netD.volatile = True
         output = netD(torch.cat((real_A, fake_b), 1))
         label.data.resize_(output.size()).fill_(real_label)
         err_g = criterion(output, label) + opt.lamb * criterion_l1(fake_b, real_B)
@@ -154,8 +151,8 @@ def checkpoint(epoch):
         os.mkdir(os.path.join("checkpoint", opt.dataset))
     net_g_model_out_path = "checkpoint/{}/netG_model_epoch_{}.pth".format(opt.dataset, epoch)
     net_d_model_out_path = "checkpoint/{}/netD_model_epoch_{}.pth".format(opt.dataset, epoch)
-    torch.save(netG, net_g_model_out_path)
-    torch.save(netD, net_d_model_out_path)
+    torch.save(netG.state_dict(), net_g_model_out_path)
+    torch.save(netD.state_dict(), net_d_model_out_path)
     print("Checkpoint saved to {}".format("checkpoint" + opt.dataset))
 
 for epoch in range(1, opt.nEpochs + 1):
