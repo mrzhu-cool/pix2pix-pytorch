@@ -37,9 +37,6 @@ The examples from the paper:
 
 ## Acknowledgments
 
-This is a rough code implementation in order to practice pytorch and there may be some 
-incorrect implementation in the code. 
+This code is a concise implementation of [pytorch-CycleGAN-and-pix2pix](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix). Much easier to understand.
 
-So the effect of this implementation is not as good as the [original one](https://github.com/phillipi/pix2pix). 
-
-Therefore, I really hope that someone can give valuable suggestions.
+Highly recommend the more completed and organized code [pytorch-CycleGAN-and-pix2pix](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix) by original author junyanz.
