@@ -39,5 +39,5 @@ for image_name in image_filenames:
     out = out.cpu()
     out_img = out.data[0]
     if not os.path.exists(os.path.join("result", opt.dataset)):
-        os.mkdir(os.path.join("result", opt.dataset))
+        os.makedirs(os.path.join("result", opt.dataset))
     save_img(out_img, "result/{}/{}".format(opt.dataset, image_name))

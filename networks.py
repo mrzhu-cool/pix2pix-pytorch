@@ -34,7 +34,7 @@ def define_G(input_nc, output_nc, ngf, norm='batch', use_dropout=False, gpu_ids=
     netG = ResnetGenerator(input_nc, output_nc, ngf, norm_layer=norm_layer, use_dropout=use_dropout, n_blocks=9, gpu_ids=gpu_ids)
 
     if len(gpu_ids) > 0:
-        netG.cuda(device_id=gpu_ids[0])
+        netG.cuda(gpu_ids[0])
     netG.apply(weights_init)
     return netG
 
@@ -50,7 +50,7 @@ def define_D(input_nc, ndf, norm='batch', use_sigmoid=False, gpu_ids=[]):
     netD = NLayerDiscriminator(input_nc, ndf, n_layers=3, norm_layer=norm_layer, use_sigmoid=use_sigmoid, gpu_ids=gpu_ids)
 
     if use_gpu:
-        netD.cuda(device_id=gpu_ids[0])
+        netD.cuda(gpu_ids[0])
     netD.apply(weights_init)
     return netD
 

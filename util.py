@@ -18,6 +18,4 @@ def save_img(image_tensor, filename):
     image_numpy = image_numpy.astype(np.uint8)
     image_pil = Image.fromarray(image_numpy)
     image_pil.save(filename)
-    print "Image saved as {}".format(filename)
-
-
+    print("Image saved as {}".format(filename))
