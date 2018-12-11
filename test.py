@@ -3,22 +3,30 @@ import argparse
 import os
 
 import torch
-from torch.autograd import Variable
 import torchvision.transforms as transforms
 
-from util import is_image_file, load_img, save_img
+from utils import is_image_file, load_img, save_img
 
 # Testing settings
-parser = argparse.ArgumentParser(description='pix2pix-PyTorch-implementation')
+parser = argparse.ArgumentParser(description='pix2pix-pytorch-implementation')
 parser.add_argument('--dataset', required=True, help='facades')
-parser.add_argument('--model', type=str, default='checkpoint/facades/netG_model_epoch_200.pth', help='model file to use')
+parser.add_argument('--direction', type=str, default='b2a', help='a2b or b2a')
+parser.add_argument('--nepochs', type=int, default=200, help='saved model of which epochs')
 parser.add_argument('--cuda', action='store_true', help='use cuda')
 opt = parser.parse_args()
 print(opt)
 
-netG = torch.load(opt.model)
+device = torch.device("cuda:0" if opt.cuda else "cpu")
 
-image_dir = "dataset/{}/test/a/".format(opt.dataset)
+model_path = "checkpoint/{}/netG_model_epoch_{}.pth".format(opt.dataset, opt.nepochs)
+
+net_g = torch.load(model_path).to(device)
+
+if opt.direction == "a2b":
+    image_dir = "dataset/{}/test/a/".format(opt.dataset)
+else:
+    image_dir = "dataset/{}/test/b/".format(opt.dataset)
+
 image_filenames = [x for x in os.listdir(image_dir) if is_image_file(x)]
 
 transform_list = [transforms.ToTensor(),
@@ -29,15 +37,10 @@ transform = transforms.Compose(transform_list)
 for image_name in image_filenames:
     img = load_img(image_dir + image_name)
     img = transform(img)
-    input = Variable(img, volatile=True).view(1, -1, 256, 256)
+    input = img.unsqueeze(0).to(device)
+    out = net_g(input)
+    out_img = out.detach().squeeze(0).cpu()
 
-    if opt.cuda:
-        netG = netG.cuda()
-        input = input.cuda()
-
-    out = netG(input)
-    out = out.cpu()
-    out_img = out.data[0]
     if not os.path.exists(os.path.join("result", opt.dataset)):
         os.makedirs(os.path.join("result", opt.dataset))
     save_img(out_img, "result/{}/{}".format(opt.dataset, image_name))

@@ -2,7 +2,7 @@
 
 PyTorch implementation of [Image-to-Image Translation Using Conditional Adversarial Networks](https://arxiv.org/pdf/1611.07004v1.pdf).
 
-Based on [pix2pix](https://phillipi.github.io/pix2pix/) by Isola et al.
+Based on [pix2pix](https://phillipi.github.io/pix2pix/) by [Phillip Isola](https://github.com/phillipi) et al.
 
 The examples from the paper: 
 
@@ -11,10 +11,9 @@ The examples from the paper:
 ## Prerequisites
 
 + Linux
-+ Python with numpy
-+ NVIDIA GPU + CUDA 8.0 + CuDNNv5.1
-+ pytorch
-+ torchvision
++ Python, Numpy, PIL
++ pytorch 0.4.0
++ torchvision 0.2.1
 
 ## Getting Started
 
@@ -29,14 +28,14 @@ The examples from the paper:
 
 + Train the model:
 
-    python train.py --dataset facades --nEpochs 200 --cuda
+    python train.py --dataset facades --cuda
 
 + Test the model:
 
-    python test.py --dataset facades --model checkpoint/facades/netG_model_epoch_200.pth --cuda
+    python test.py --dataset facades --cuda
 
 ## Acknowledgments
 
-This code is a concise implementation of [pytorch-CycleGAN-and-pix2pix](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix). Much easier to understand.
+This code is a simple implementation of [pix2pix](https://phillipi.github.io/pix2pix/). Easier to understand. Note that we use a downsampling-resblocks-upsampling structure instead of the unet structure in this code, therefore the results of this code may inconsistent with the results presented in the paper.
 
-Highly recommend the more completed and organized code [pytorch-CycleGAN-and-pix2pix](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix) by original author junyanz.
+Highly recommend the more sophisticated and organized code [pytorch-CycleGAN-and-pix2pix](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix) by [Jun-Yan Zhu](https://github.com/junyanz).
