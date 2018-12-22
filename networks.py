@@ -67,22 +67,19 @@ def init_weights(net, init_type='normal', gain=0.02):
     net.apply(init_func)
 
 
-def init_net(net, init_type='normal', init_gain=0.02, gpu_ids=[]):
-    if len(gpu_ids) > 0:
-        assert(torch.cuda.is_available())
-        net.to(gpu_ids[0])
-        net = torch.nn.DataParallel(net, gpu_ids)
+def init_net(net, init_type='normal', init_gain=0.02, gpu_id='cuda:0'):
+    net.to(gpu_id)
     init_weights(net, init_type, gain=init_gain)
     return net
 
 
-def define_G(input_nc, output_nc, ngf, norm='batch', use_dropout=False, init_type='normal', init_gain=0.02, gpu_ids=[]):
+def define_G(input_nc, output_nc, ngf, norm='batch', use_dropout=False, init_type='normal', init_gain=0.02, gpu_id='cuda:0'):
     net = None
     norm_layer = get_norm_layer(norm_type=norm)
 
     net = ResnetGenerator(input_nc, output_nc, ngf, norm_layer=norm_layer, use_dropout=use_dropout, n_blocks=9)
    
-    return init_net(net, init_type, init_gain, gpu_ids)
+    return init_net(net, init_type, init_gain, gpu_id)
 
 
 # Defines the generator that consists of Resnet blocks between a few
@@ -235,7 +232,7 @@ class Outconv(nn.Module):
 
 
 def define_D(input_nc, ndf, netD,
-             n_layers_D=3, norm='batch', use_sigmoid=False, init_type='normal', init_gain=0.02, gpu_ids=[]):
+             n_layers_D=3, norm='batch', use_sigmoid=False, init_type='normal', init_gain=0.02, gpu_id='cuda:0'):
     net = None
     norm_layer = get_norm_layer(norm_type=norm)
 
@@ -248,7 +245,7 @@ def define_D(input_nc, ndf, netD,
     else:
         raise NotImplementedError('Discriminator model name [%s] is not recognized' % net)
 
-    return init_net(net, init_type, init_gain, gpu_ids)
+    return init_net(net, init_type, init_gain, gpu_id)
 
 
 # Defines the PatchGAN discriminator with the specified arguments.

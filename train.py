@@ -56,8 +56,8 @@ testing_data_loader = DataLoader(dataset=test_set, num_workers=opt.threads, batc
 device = torch.device("cuda:0" if opt.cuda else "cpu")
 
 print('===> Building models')
-net_g = define_G(opt.input_nc, opt.output_nc, opt.ngf, 'batch', False, 'normal', 0.02, [0]).to(device)
-net_d = define_D(opt.input_nc + opt.output_nc, opt.ndf, 'basic').to(device)
+net_g = define_G(opt.input_nc, opt.output_nc, opt.ngf, 'batch', False, 'normal', 0.02, gpu_id=device)
+net_d = define_D(opt.input_nc + opt.output_nc, opt.ndf, 'basic', gpu_id=device)
 
 criterionGAN = GANLoss().to(device)
 criterionL1 = nn.L1Loss().to(device)
@@ -120,7 +120,7 @@ for epoch in range(opt.epoch_count, opt.niter + opt.niter_decay + 1):
         optimizer_g.step()
 
         print("===> Epoch[{}]({}/{}): Loss_D: {:.4f} Loss_G: {:.4f}".format(
-            epoch, iteration, len(training_data_loader), loss_d.data[0], loss_g.data[0]))
+            epoch, iteration, len(training_data_loader), loss_d.item(), loss_g.item()))
 
     update_learning_rate(net_g_scheduler, optimizer_g)
     update_learning_rate(net_d_scheduler, optimizer_d)
@@ -132,7 +132,7 @@ for epoch in range(opt.epoch_count, opt.niter + opt.niter_decay + 1):
 
         prediction = net_g(input)
         mse = criterionMSE(prediction, target)
-        psnr = 10 * log10(1 / mse.data[0])
+        psnr = 10 * log10(1 / mse.item())
         avg_psnr += psnr
     print("===> Avg. PSNR: {:.4f} dB".format(avg_psnr / len(testing_data_loader)))
 
